@@ -1,0 +1,14 @@
+{
+  "name": "breakout-chat-server",
+  "version": "0.0.1",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.15.2",
+    "nodemon": "^2.0.4",
+    "socket.io": "^1.7.3"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "./node_modules/.bin/nodemon index.js"
+  }
+}
