@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, afterUpdate } from 'svelte';
+    import { onMount, afterUpdate, tick } from 'svelte';
     import Message from './Message.svelte';
 
     import type { MessageHandler, EmitHandler, Message as MessageInterface, ChatController, ChatSettings } from '../../interfaces/chat';
@@ -13,15 +13,17 @@
     let chatController: ChatController = null;
 
     let messages: Array<MessageInterface> = [];
-    const handleNewMessage: MessageHandler = (text, author) => {
+    const handleNewMessage: MessageHandler = async (text, author) => {
         messages = [...messages, { text, author, timestamp: new Date() }];
+        await tick();
+        let chat = document.querySelectorAll('.sidebar__body')[0];
+        chat.scrollTop = chat.scrollHeight;
     }
 
     const handleMessageSend = () => {
         if (!newMessageText) return;
 
         chatController.sendMessage(newMessageText);
-
         newMessageText = '';
 
         return false;
@@ -48,9 +50,11 @@
     .sidebar__body {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
         height: calc(100% - 120px);
         padding: 0 24px;
+        flex: 1;
+        overflow-y: scroll;
+        justify-content: flex-start;
     }
 
     .sidebar__footer {

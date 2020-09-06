@@ -10,6 +10,10 @@
         margin: 6px 0;
     }
 
+    .message__container:first-child { 
+        margin-top: auto;
+    }
+
     .message__header {
         margin-top: 12px;
     }
