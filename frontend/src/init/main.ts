@@ -1,9 +1,9 @@
-import { APP_ID } from '../config';
+import { CLIENT_ID } from '../config';
 import appIcon from './icon';
 
 const initChat = (breakoutChatRoomId: string) => {
   miro.__setRuntimeState({
-    [APP_ID]: {
+    [CLIENT_ID]: {
       breakoutChatRoomId,
     },
   });
@@ -27,7 +27,7 @@ const handleAddChatClick = async () => {
         borderWidth: 7,
       },
       metadata: {
-        [APP_ID]: {
+        [CLIENT_ID]: {
           isBreakoutChatButton: true,
         },
       },
@@ -48,7 +48,7 @@ const initPlugin = async () => {
     const widgets = await miro.board.selection.get();
     if (
       widgets.length === 1 &&
-      widgets[0].metadata[APP_ID]?.isBreakoutChatButton
+      widgets[0].metadata[CLIENT_ID]?.isBreakoutChatButton
     ) {
       initChat(widgets[0].id);
     }

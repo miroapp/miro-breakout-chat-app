@@ -37,7 +37,7 @@ const replacePlugin = replace({
 	exclude: 'node_modules/**',
 	process: JSON.stringify({
 		env: {
-			APP_ID: process.env.APP_ID,
+			CLIENT_ID: process.env.CLIENT_ID,
 			CHAT_HOST: process.env.CHAT_HOST,
 		}
 	}),

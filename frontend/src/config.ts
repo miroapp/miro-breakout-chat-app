@@ -1,5 +1,5 @@
 // @ts-ignore
-export const APP_ID = process.env.APP_ID;
+export const CLIENT_ID = process.env.CLIENT_ID;
 
 // @ts-ignore
 export const CHAT_HOST = process.env.CHAT_HOST;

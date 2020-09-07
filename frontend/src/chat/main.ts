@@ -2,7 +2,7 @@ import socketioControllerFactory from './controllers/socketIoController';
 import Chat from './components/Chat/Chat.svelte';
 import Error from './components/Error.svelte';
 
-import { APP_ID } from '../config';
+import { CLIENT_ID } from '../config';
 
 const initApp = (
 	roomId: string,
@@ -30,9 +30,9 @@ miro.onReady(async () => {
 	const savedState = await miro.__getRuntimeState();
 	const name = await getCurrentUserName();
 
-	if (savedState[APP_ID]?.breakoutChatRoomId && name) {
+	if (savedState[CLIENT_ID]?.breakoutChatRoomId && name) {
 		initApp(
-			savedState[APP_ID]?.breakoutChatRoomId,
+			savedState[CLIENT_ID]?.breakoutChatRoomId,
 			name,
 		);
 	} else {
