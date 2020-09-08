@@ -9,7 +9,7 @@ Add multiple local chats to you Miro board. Uses WebSockets and Miro Web SDK.
 - Svelte + TypeScript frontend
 
 ## Start-up
-1. Get your application id as [described here](https://developers.miro.com/docs/how-to-start) and save it in the `./frontend/.env` file (use `.env_example` as a template)
+1. Get your client id as [described here](https://developers.miro.com/docs/how-to-start) and save it in the `./frontend/.env` file (use `.env_example` as a template)
 
 2. Install packages and run
 - If you have Docker, just launch `first-run.sh` - it will run `npm install` in both `backend` and `frontend` folders and then run `docker-compose up -d` (application folders including node_modules are mounted to containers to provide live reloading). Next time, you can just run `docker-compose up -d` in your root folder. Use `docker-compose down` to stop containers.
