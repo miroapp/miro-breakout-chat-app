@@ -1,3 +1,3 @@
 module.exports = {
-  transports: ["websocket"],
+  transports: ['websocket'],
 };

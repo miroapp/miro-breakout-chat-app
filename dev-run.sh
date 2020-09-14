@@ -7,4 +7,4 @@ npm i
 wait
 
 cd ..
-docker-compose up -d -f
+docker-compose up
