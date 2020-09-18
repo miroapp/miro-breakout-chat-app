@@ -152,7 +152,7 @@ declare module SDK {
 
 		// Dragging started
 		getDraggableItemPreview: (
-			targetElement: HTMLElement
+			targetElement: HTMLElement,
 		) => {
 			width?: number // 100 is default
 			height?: number // 100 is default
@@ -335,7 +335,7 @@ declare module SDK {
 			widgetIds: InputWidgets,
 			deltaX?: number,
 			deltaY?: number,
-			deltaRotation?: number
+			deltaRotation?: number,
 		): Promise<IWidget[]>
 
 		/**
