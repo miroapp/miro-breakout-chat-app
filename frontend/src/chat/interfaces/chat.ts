@@ -11,6 +11,8 @@ export type EmitHandler = (error: any, response: any) => void
 export interface ChatSettings {
 	roomId: string
 	name: string
+	boardId: string
+	token: string
 	messageHandler: MessageHandler
 }
 

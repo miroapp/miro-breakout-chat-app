@@ -1,11 +1,13 @@
 var express = require('express')
 var app = express()
+var axios = require('axios')
 var cors = require('cors')
 var http = require('http').Server(app)
 var socketConfig = require('./config')
 var io = require('socket.io')(http, socketConfig)
 var port = process.env.PORT || 8081
 
+const apiBaseUrl = 'https://api.miro.com/v1'
 var rooms = {}
 var roomsCreatedAt = new WeakMap()
 var names = new WeakMap()
@@ -30,6 +32,28 @@ app.get('/rooms/:roomId', (req, res) => {
 
 app.get('/rooms', (req, res) => {
 	res.json(Object.keys(rooms))
+})
+
+// token validation helper
+const isTokenValid = async ({boardId, token}) => {
+	if (!boardId || !token) return false
+
+	try {
+		const headers = {Authorization: `Bearer ${token}`}
+		const response = await axios.get(`${apiBaseUrl}/boards/${boardId}`, {headers})
+		// Business logic can be wrong since I am not familiar with it in general
+		return ['commentor', 'editor', 'owner'].includes(response.data.currentUserConnection.role)
+	} catch (error) {
+		console.error(`Token validation error: ${error.message}`, {boardId, token})
+		return false
+	}
+}
+
+// socket auth middleware connection will be established only if connection valid
+io.use(async (socket, next) => {
+	const {boardId, token} = socket.handshake.query
+	const isConnectionValid = await isTokenValid({boardId, token})
+	return isConnectionValid ? next() : next(new Error('authentication error'))
 })
 
 io.on('connection', (socket) => {

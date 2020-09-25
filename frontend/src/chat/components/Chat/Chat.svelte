@@ -1,10 +1,9 @@
 <script lang="ts">
-	import {onMount, afterUpdate} from 'svelte'
+	import {onMount} from 'svelte'
 	import Message from './Message.svelte'
 
 	import type {
 		MessageHandler,
-		EmitHandler,
 		Message as MessageInterface,
 		ChatController,
 		ChatSettings,
@@ -13,6 +12,8 @@
 	export let chatFactory: (settings: ChatSettings) => ChatController
 	export let roomId: string
 	export let name: string
+	export let boardId: string
+	export let token: string
 
 	let newMessageText: string = ''
 
@@ -34,7 +35,7 @@
 	}
 
 	onMount(() => {
-		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage})
+		chatController = chatFactory({roomId, name, boardId, token, messageHandler: handleNewMessage})
 	})
 </script>
 

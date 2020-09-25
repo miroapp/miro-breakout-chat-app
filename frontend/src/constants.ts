@@ -1,0 +1,5 @@
+export enum BoardPermission {
+	EDIT_INFO = 'EDIT_INFO',
+	EDIT_CONTENT = 'EDIT_CONTENT',
+	EDIT_COMMENTS = 'EDIT_COMMENTS',
+}

@@ -4,8 +4,8 @@ import {CHAT_HOST, CHAT_OPTIONS} from '../../config'
 
 import type {ChatSettings, ChatController} from '../interfaces/chat'
 
-const initChat = ({roomId, name, messageHandler}: ChatSettings) => {
-	const socket = io(CHAT_HOST, CHAT_OPTIONS)
+const initChat = ({roomId, name, boardId, token, messageHandler}: ChatSettings) => {
+	const socket = io(`${CHAT_HOST}?token=${token}&boardId=${encodeURIComponent(boardId)}`, CHAT_OPTIONS)
 
 	socket.emit('join', roomId, name, () => {})
 

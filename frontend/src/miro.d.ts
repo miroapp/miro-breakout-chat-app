@@ -138,6 +138,9 @@ declare module SDK {
 
 		utils: IBoardUtils
 
+		// [Experimental feature] Returns online users array
+		getOnlineUsers(): Promise<OnlineUser[]>
+
 		__getBoardURLWithParams(params: any): Promise<string>
 		__getParamsFromURL(): Promise<any>
 		__enableLeftClickOnCanvas(): void
@@ -254,6 +257,11 @@ declare module SDK {
 	interface IBoardUtils {
 		/** Calculate widgets union boundaries */
 		unionWidgetBounds(widgets: {bounds: IBounds}[]): IBounds
+	}
+
+	interface OnlineUser {
+		id: string
+		name: string
 	}
 
 	interface IViewportOptions {
@@ -689,7 +697,7 @@ declare module SDK {
 	// Helpers data
 	////////////////////////////////////////////////////////////////////////
 
-	type BoardPermission = 'EDIT_INFO' | 'EDIT_CONTENT' | 'EDIT_COMMENTS'
+	type BoardPermission = import('./constants').BoardPermission
 	type AccountPermission = 'MANAGE_APPS'
 
 	interface IBoardInfo {
