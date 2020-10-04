@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {onMount, afterUpdate} from 'svelte'
+	import {onMount, afterUpdate, beforeUpdate} from 'svelte'
 	import Message from './Message.svelte'
 
 	import type {
@@ -13,6 +13,8 @@
 	export let chatFactory: (settings: ChatSettings) => ChatController
 	export let roomId: string
 	export let name: string
+	export let div: any
+	let autoscroll: boolean
 
 	let newMessageText: string = ''
 
@@ -36,6 +38,14 @@
 	onMount(() => {
 		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage})
 	})
+
+	beforeUpdate(() => {
+		autoscroll = div && (div.offsetHeight + div.scrollTop) > (div.scrollHeight - 20)
+	})
+
+	afterUpdate(() => {
+		if (autoscroll) div.scrollTo(0, div.scrollHeight)
+	})
 </script>
 
 <style>
@@ -54,9 +64,9 @@
 	.sidebar__body {
 		display: flex;
 		flex-direction: column;
-		justify-content: flex-end;
 		height: calc(100% - 120px);
 		padding: 0 24px;
+		overflow-y: auto;
 	}
 
 	.sidebar__footer {
@@ -72,7 +82,7 @@
 	<div class="sidebar__header">
 		<span class="miro-h2">Breakout Chat</span>
 	</div>
-	<div class="sidebar__body">
+	<div class="sidebar__body" bind:this={div}>
 		{#each messages as message}
 			<Message {message} />
 		{/each}
