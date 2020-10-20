@@ -1,10 +1,10 @@
 <script lang="ts">
-	import {onMount, afterUpdate} from 'svelte'
+	import {onMount, afterUpdate} from 'svelte' // NB! Improvement
 	import Message from './Message.svelte'
 
 	import type {
 		MessageHandler,
-		EmitHandler,
+		EmitHandler, // NB! Improvement
 		Message as MessageInterface,
 		ChatController,
 		ChatSettings,
@@ -12,26 +12,36 @@
 
 	export let chatFactory: (settings: ChatSettings) => ChatController
 	export let roomId: string
-	export let name: string
+    export let name: string
 
 	let newMessageText: string = ''
 
 	let chatController: ChatController = null
 
-	let messages: Array<MessageInterface> = []
+    let messages: Array<MessageInterface> = []
+
+    $: lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined
+
 	const handleNewMessage: MessageHandler = (text, author) => {
-		messages = [...messages, {text, author, timestamp: new Date()}]
+        author = Math.random() > 0.75 ? author : 'John Doe', // DEV ONLY!!
+        messages = [...messages, {
+            text,
+            author,
+            timestamp: new Date(),
+            isConsecutive: lastMessage?.author === author,
+            userIsAuthor: author === name
+        }]
 	}
 
 	const handleMessageSend = () => {
-		if (!newMessageText) return
+        if (!newMessageText) return
 
 		chatController.sendMessage(newMessageText)
 
 		newMessageText = ''
 
 		return false
-	}
+    }
 
 	onMount(() => {
 		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage})
@@ -56,7 +66,7 @@
 		flex-direction: column;
 		justify-content: flex-end;
 		height: calc(100% - 120px);
-		padding: 0 24px;
+		padding: 0 8px;
 	}
 
 	.sidebar__footer {
