@@ -2,8 +2,8 @@ export interface Message {
 	text: string
 	author: string
 	timestamp: Date
-    isConsecutive?: Boolean,
-    userIsAuthor?: Boolean
+	isConsecutive: Boolean,
+	userIsAuthor: Boolean
 }
 
 export type MessageHandler = (msg: string, name: string) => void
