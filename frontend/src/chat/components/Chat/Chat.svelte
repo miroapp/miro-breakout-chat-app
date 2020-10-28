@@ -47,16 +47,16 @@
 	}
 
 	.sidebar__header {
-		padding: 24px;
-		height: 64px;
+		padding: 25px;
+		height: 50px;
 	}
 
 	.sidebar__body {
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-end;
-		height: calc(100% - 120px);
-		padding: 0 24px;
+		display:flex;
+        flex-direction: column-reverse;
+		overflow-x: auto;
+        height: calc(100% - 120px);
+		padding: 0px 24px;
 	}
 
 	.sidebar__footer {
