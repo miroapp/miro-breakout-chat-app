@@ -4,34 +4,29 @@ var app = express()
 var cors = require('cors')
 var http = require('http').Server(app)
 var socketConfig = require('./config')
-const { joinHandler } = require('./sockets/join-handler')
 var io = require('socket.io')(http, socketConfig)
 var port = process.env.PORT || 8081
 
-var rooms = {}
-var roomsCreatedAt = new WeakMap()
-var names = new WeakMap()
-var roomId
-var name
+const {getAllRooms} = require('./boards/boards')
+const {joinHandler} = require('./sockets/join-handler')
 
 app.use(cors())
 
 app.get('/rooms/:roomId', (req, res) => {
 	const {roomId} = req.params
-	const room = rooms[roomId]
+	const rooms = getAllRooms()
+
+	const room = rooms.find((r) => (r.roomId = roomId))
 
 	if (room) {
-		res.json({
-			createdAt: roomsCreatedAt.get(room),
-			users: Object.values(room).map((socket) => names.get(socket)),
-		})
+		res.json(room)
 	} else {
-		res.status(500).end()
+		res.status(404).end()
 	}
 })
 
 app.get('/rooms', (req, res) => {
-	res.json(Object.keys(rooms))
+	res.json(getAllRooms())
 })
 
 io.on('connection', (socket) => {

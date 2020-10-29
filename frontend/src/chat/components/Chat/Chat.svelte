@@ -1,10 +1,9 @@
 <script lang="ts">
-	import {onMount, afterUpdate} from 'svelte'
+	import {onMount} from 'svelte'
 	import Message from './Message.svelte'
 
 	import type {
     MessageHandler,
-    EmitHandler,
 		Message as MessageInterface,
 		ChatController,
 		ChatSettings,
