@@ -14,8 +14,6 @@ module.exports.isAuthorized = async (socket, boardId) => {
       },
       throwHttpErrors: false
     }
-
-    console.log({url})
   
     const response = await got(url, options)
 
