@@ -3,6 +3,7 @@ var app = express()
 var cors = require('cors')
 var http = require('http').Server(app)
 var socketConfig = require('./config')
+const { joinHandler } = require('./sockets/join-handler')
 var io = require('socket.io')(http, socketConfig)
 var port = process.env.PORT || 8081
 
@@ -32,49 +33,33 @@ app.get('/rooms', (req, res) => {
 	res.json(Object.keys(rooms))
 })
 
+// io.use((socket, next) => {
+//   console.log(socket.handshake.query.token)
+//   next()
+// })
+
 io.on('connection', (socket) => {
-	socket.on('join', (_roomId, _name, callback) => {
-		if (!_roomId || !_name) {
-			if (callback) {
-				callback('roomId and name params required')
-			}
-			console.warn(`${socket.id} attempting to connect without roomId or name`, {roomId, name})
-			return
-		}
+	socket.on('join', joinHandler(io, socket))
 
-		roomId = _roomId
-		name = _name
-
-		if (rooms[roomId]) {
-			rooms[roomId][socket.id] = socket
-		} else {
-			rooms[roomId] = {[socket.id]: socket}
-			roomsCreatedAt.set(rooms[roomId], new Date())
-		}
-		socket.join(roomId)
-
-		names.set(socket, name)
-
-		io.to(roomId).emit('system message', `${name} joined ${roomId}`)
-
-		if (callback) {
-			callback(null, {success: true})
-		}
-	})
-
-	socket.on('chat message', (msg) => {
+	socket.on('chat message', (roomId, msg, name) => {
+    console.log(socket.handshake.query.token)
+    console.log({msg, name, roomId})
 		io.to(roomId).emit('chat message', msg, name)
 	})
 
 	socket.on('disconnect', () => {
 		io.to(roomId).emit('system message', `${name} left ${roomId}`)
 
-		delete rooms[roomId][socket.id]
-
-		const room = rooms[roomId]
-		if (!Object.keys(room).length) {
-			delete rooms[roomId]
-		}
+    try {
+      delete rooms[roomId][socket.id]
+      const room = rooms[roomId]
+      if (!Object.keys(room).length) {
+        delete rooms[roomId]
+      }
+    } catch (error) {
+      console.warn('Could not remove socket reference or room for', {roomId, socketId: socket.id})
+      console.error(error)
+    }
 	})
 })
 
