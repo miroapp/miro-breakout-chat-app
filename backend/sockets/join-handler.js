@@ -59,7 +59,7 @@ module.exports.joinHandler = (io, socket) => async (boardId, roomId, name, callb
 
 	socket.on('chat message', chatMessageHandler(io, roomId))
 
-	socket.on('disconnect', disconnectHandler(io, socket, boardId, roomId))
+	socket.on('disconnect', disconnectHandler(io, socket, boardId, roomId, name))
 
 	if (callback) {
 		callback(null, {success: true})

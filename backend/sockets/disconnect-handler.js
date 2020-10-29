@@ -17,8 +17,9 @@ const {boards} = require('../boards/boards')
  * }
  */
 
-module.exports.disconnectHandler = (io, socket, boardId, roomId) => () => {
+module.exports.disconnectHandler = (io, socket, boardId, roomId, name) => () => {
   io.to(roomId).emit('system message', `${name} left ${roomId}`)
+  console.log(`${name} left ${roomId}`)
 
   try {
     delete boards[boardId][roomId].sockets[socket.id]
