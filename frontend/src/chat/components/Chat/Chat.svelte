@@ -3,8 +3,8 @@
 	import Message from './Message.svelte'
 
 	import type {
-		MessageHandler,
-		EmitHandler,
+    MessageHandler,
+    EmitHandler,
 		Message as MessageInterface,
 		ChatController,
 		ChatSettings,
@@ -12,7 +12,9 @@
 
 	export let chatFactory: (settings: ChatSettings) => ChatController
 	export let roomId: string
-	export let name: string
+  export let name: string
+  export let token: string
+  export let boardId: string
 
 	let newMessageText: string = ''
 
@@ -34,7 +36,7 @@
 	}
 
 	onMount(() => {
-		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage})
+		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage, token, boardId})
 	})
 </script>
 
