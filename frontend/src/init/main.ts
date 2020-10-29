@@ -67,7 +67,7 @@ miro.onReady(async () => {
 	if (authorized) {
 		initPlugin()
 	} else {
-		const res = await miro.board.ui.openModal('not-authorized.html')
+		const res = await miro.board.ui.openModal('/not-authorized.html')
 		if (res === 'success') {
 			initPlugin()
 		}

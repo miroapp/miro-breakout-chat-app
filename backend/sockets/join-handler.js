@@ -1,5 +1,7 @@
 const {boards} = require('../boards/boards')
 const {isAuthorized} = require('./authorization')
+const {chatMessageHandler} = require('./chat-message-handler')
+const {disconnectHandler} = require('./disconnect-handler')
 
 const isValidJoinRequest = (boardId, roomId, name) => {
 	return boardId && roomId && name
@@ -29,15 +31,15 @@ module.exports.joinHandler = (io, socket) => async (boardId, roomId, name, callb
 		console.warn(`${socket.id} attempting to connect without roomId, name or boardId`, {roomId, name, boardId})
 		callback(`boardId, roomId and name are required to connect`)
 		return
-  }
-  
-  const authorized = await isAuthorized(socket, boardId)
+	}
 
-  if(!authorized) {
-    console.warn(`${name} attempted to connect without the proper authorization`)
+	const authorized = await isAuthorized(socket, boardId)
+
+	if (!authorized) {
+		console.warn(`${name} attempted to connect without the proper authorization`)
 		callback(`Unauthorized`)
 		return
-  }
+	}
 
 	if (!boards[boardId]) boards[boardId] = {}
 	if (!boards[boardId][roomId]) {
@@ -48,12 +50,16 @@ module.exports.joinHandler = (io, socket) => async (boardId, roomId, name, callb
 	}
 	if (!boards[boardId][roomId].sockets[socket.id]) {
 		boards[boardId][roomId].sockets[socket.id] = {socket, name}
-  }
-  
-  socket.join(roomId)
-  console.log(`${name} joined ${roomId}`)
+	}
+
+	socket.join(roomId)
+	console.log(`${name} joined ${roomId}`)
 
 	io.to(roomId).emit('system message', `${name} joined ${roomId}`)
+
+	socket.on('chat message', chatMessageHandler(io, roomId))
+
+	socket.on('disconnect', disconnectHandler(io, socket, boardId, roomId))
 
 	if (callback) {
 		callback(null, {success: true})

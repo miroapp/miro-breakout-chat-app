@@ -16,7 +16,7 @@ const initChat = ({roomId, name, messageHandler, token, boardId}: ChatSettings) 
 
 	return {
 		sendMessage: (msg: string) => {
-			socket.emit('chat message', roomId, msg, name, console.log)
+			socket.emit('chat message', msg, name, console.log)
 		},
 	} as ChatController
 }
