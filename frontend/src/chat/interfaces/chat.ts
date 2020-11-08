@@ -29,6 +29,5 @@ export interface User {
 }
 
 export interface ChatController {
-	checkAuth: () => boolean
 	sendMessage: (msg: string) => void
 }

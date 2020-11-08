@@ -11,7 +11,6 @@ const initChat = ({roomId, token, authHandler, messageHandler}: ChatSettings) =>
 			access_token: token
 		}
 	})
-	let isAuthorized = false
 
 	socket.emit('join', roomId, (err, res) => {
 		if (err) {
@@ -24,9 +23,6 @@ const initChat = ({roomId, token, authHandler, messageHandler}: ChatSettings) =>
 	socket.on('chat message', messageHandler)
 
 	return {
-		checkAuth() {
-			return isAuthorized
-		},
 		sendMessage: (msg: string) => {
 			socket.emit('chat message', msg, () => {})
 		},

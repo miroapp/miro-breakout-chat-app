@@ -30,7 +30,7 @@
 	}
 
 	const handleMessageSend = () => {
-		if (!newMessageText || !chatController.checkAuth()) return
+		if (!newMessageText) return
 
 		chatController.sendMessage(newMessageText)
 
