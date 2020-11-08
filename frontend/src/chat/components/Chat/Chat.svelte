@@ -1,30 +1,36 @@
 <script lang="ts">
-	import {onMount, afterUpdate} from 'svelte'
+	import {onMount} from 'svelte'
 	import Message from './Message.svelte'
 
 	import type {
 		MessageHandler,
-		EmitHandler,
 		Message as MessageInterface,
 		ChatController,
 		ChatSettings,
+		User,
+		AuthHandler,
 	} from '../../interfaces/chat'
+	import { ChatState } from '../../interfaces/chat'
 
 	export let chatFactory: (settings: ChatSettings) => ChatController
 	export let roomId: string
-	export let name: string
+	export let user: User
 
 	let newMessageText: string = ''
-
 	let chatController: ChatController = null
+	let token = user.token
+	let chatState = ChatState.Loading
 
 	let messages: Array<MessageInterface> = []
 	const handleNewMessage: MessageHandler = (text, author) => {
-		messages = [...messages, {text, author, timestamp: new Date()}]
+		messages = [...messages, {text, author: author.name, timestamp: new Date()}]
+	}
+	const authHandler: AuthHandler = (isAuthorized) => {
+		chatState = isAuthorized ? ChatState.Success : ChatState.Unauthorized
 	}
 
 	const handleMessageSend = () => {
-		if (!newMessageText) return
+		if (!newMessageText || !chatController.checkAuth()) return
 
 		chatController.sendMessage(newMessageText)
 
@@ -34,7 +40,7 @@
 	}
 
 	onMount(() => {
-		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage})
+		chatController = chatFactory({roomId, token, authHandler, messageHandler: handleNewMessage})
 	})
 </script>
 
@@ -78,13 +84,19 @@
 		{/each}
 	</div>
 	<div class="sidebar__footer">
-		<form on:submit|preventDefault={handleMessageSend}>
-			<input
-				disabled={chatController === null}
-				type="text"
-				class="miro-input miro-input--primary"
-				bind:value={newMessageText}
-				placeholder="Type your message here" />
-		</form>
+		{#if chatState === ChatState.Loading}
+			<p>Loading</p>
+		{:else if chatState === ChatState.Unauthorized}
+			<p>Not authorized</p>
+		{:else}
+			<form on:submit|preventDefault={handleMessageSend}>
+				<input
+					disabled={chatController === null}
+					type="text"
+					class="miro-input miro-input--primary"
+					bind:value={newMessageText}
+					placeholder="Type your message here" />
+			</form>
+		{/if}
 	</div>
 </div>

@@ -14,4 +14,4 @@ COPY --chown=node:node . .
 
 EXPOSE 8081
 
-CMD [ "node", "index.js" ]
+CMD [ "npm", "src/index.js" ]

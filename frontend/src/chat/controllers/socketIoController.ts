@@ -4,14 +4,29 @@ import {CHAT_HOST, CHAT_OPTIONS} from '../../config'
 
 import type {ChatSettings, ChatController} from '../interfaces/chat'
 
-const initChat = ({roomId, name, messageHandler}: ChatSettings) => {
-	const socket = io(CHAT_HOST, CHAT_OPTIONS)
+const initChat = ({roomId, token, authHandler, messageHandler}: ChatSettings) => {
+	const socket = io(CHAT_HOST, {
+		...CHAT_OPTIONS,
+		query: {
+			access_token: token
+		}
+	})
+	let isAuthorized = false
 
-	socket.emit('join', roomId, name, () => {})
+	socket.emit('join', roomId, (err, res) => {
+		if (err) {
+			console.warn(err)
+		}
+
+		authHandler(!err)
+	})
 
 	socket.on('chat message', messageHandler)
 
 	return {
+		checkAuth() {
+			return isAuthorized
+		},
 		sendMessage: (msg: string) => {
 			socket.emit('chat message', msg, () => {})
 		},

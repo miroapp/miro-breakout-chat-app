@@ -4,16 +4,31 @@ export interface Message {
 	timestamp: Date
 }
 
-export type MessageHandler = (msg: string, name: string) => void
+export type AuthHandler = (isAuthorized: boolean) => void
+export type MessageHandler = (msg: string, user: User) => void
 
 export type EmitHandler = (error: any, response: any) => void
 
+export enum ChatState {
+	Loading,
+	Unauthorized,
+	Success
+}
+
 export interface ChatSettings {
 	roomId: string
-	name: string
+	token: string
+	authHandler: AuthHandler
 	messageHandler: MessageHandler
 }
 
+export interface User {
+	id: string
+	name: string
+	token?: string
+}
+
 export interface ChatController {
+	checkAuth: () => boolean
 	sendMessage: (msg: string) => void
 }
