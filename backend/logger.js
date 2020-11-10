@@ -8,6 +8,6 @@ module.exports.warn = (message) => {
     console.warn(`${new Date().toISOString()} ${message}`);
 };
 
-module.exports.warn = (err) => {
+module.exports.error = (err) => {
     console.error(`${new Date().toISOString()} ${err.message} ${err.stack}`)
 };

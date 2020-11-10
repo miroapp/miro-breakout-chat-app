@@ -4,6 +4,7 @@
 
 	import type {
 		MessageHandler,
+		MessageHistoryHandler,
 		EmitHandler,
 		Message as MessageInterface,
 		ChatController,
@@ -14,13 +15,17 @@
 	export let roomId: string
 	export let name: string
 
+	const COUNT_LOAD_MESSAGES = 20;
 	let newMessageText: string = ''
+	let noOlderMessages: boolean = true;
 
 	let chatController: ChatController = null
 
 	let messages: Array<MessageInterface> = []
 	const handleNewMessage: MessageHandler = (text, author) => {
 		messages = [...messages, {text, author, timestamp: new Date()}]
+		messages = messages.sort((a,b) => (a.timestamp > b.timestamp) ? 1 : 
+                ((b.timestamp > a.timestamp) ? -1 : 0))
 	}
 
 	const handleMessageSend = () => {
@@ -33,8 +38,25 @@
 		return false
 	}
 
+	const handleRequestMessageHistory = () => {
+		chatController.getMessageHistory({
+			roomId, 
+			oldestMessageTimestamp: messages.length ? messages[0].timestamp : null,
+			limit: COUNT_LOAD_MESSAGES})
+	}
+
+	const handleReceiveMessageHistory : MessageHistoryHandler = (_messages) => {
+		if (!_messages.length) {
+			noOlderMessages = true;
+		}
+		else {
+			messages = [..._messages, ...messages]
+		}
+	}
+
 	onMount(() => {
-		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage})
+		chatController = chatFactory({roomId, name, messageHandler: handleNewMessage, messageHistoryHandler: handleReceiveMessageHistory})
+		chatController.getMessageHistory({roomId, oldestMessageTimestamp: null, limit: COUNT_LOAD_MESSAGES});
 	})
 </script>
 
@@ -73,6 +95,11 @@
 		<span class="miro-h2">Breakout Chat</span>
 	</div>
 	<div class="sidebar__body">
+		{#if !noOlderMessages}
+			<button on:click={handleRequestMessageHistory}>
+				Load older messages..
+			</button>
+  		{/if}
 		{#each messages as message}
 			<Message {message} />
 		{/each}

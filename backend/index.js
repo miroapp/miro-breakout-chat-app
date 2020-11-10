@@ -6,6 +6,9 @@ const socketConfig = require('./config')
 const io = require('socket.io')(http, socketConfig)
 const port = process.env.PORT || 8081
 const logger = require("./logger");
+const Database = require("./storage/db");
+const db = new Database();
+const ChatMessage = require("./model/chat-message");
 
 let rooms = {}
 let roomsCreatedAt = new WeakMap() 
@@ -58,7 +61,7 @@ io.on('connection', (socket) => {
 			rooms[roomId] = {[socket.id]: socket}
 			roomsCreatedAt.set(rooms[roomId], new Date())
 		}
-		
+
 		socket.join(roomId)
 
 		names.set(socket, name)
@@ -70,9 +73,30 @@ io.on('connection', (socket) => {
 		}
 	})
 
-	socket.on('chat message', (msg) => {
-		logger.log(`Got chat message by ${name}`)
-		io.to(roomId).emit('chat message', msg, name)
+	socket.on('chat message', async(msg, _name) => {
+		logger.log(`Got chat message by ${_name}`)
+		const message = new ChatMessage(msg, _name, roomId);
+		try {
+			await db.messages.save(message);
+			io.to(roomId).emit('chat message', msg, _name);
+		}
+		catch (err) {
+			logger.error(err);
+			io.to(roomId).emit('system message', `Error occured on saving message. Error: ${err.message}`);
+		}		
+	})
+
+	socket.on('message history', async ({roomId, oldestMessageTimestamp, limit}) => {
+		logger.log(`Getting message history for roomId ${roomId} and earliest timestamp ${oldestMessageTimestamp} and limit ${limit}.`)
+		try {
+			const results = await db.messages.listOlder(roomId, oldestMessageTimestamp, limit)
+			// check that this at least returns some empty array
+			io.to(roomId).emit('message history', results)
+		}
+		catch (err) {
+			logger.error(err);
+			io.to(roomId).emit('system message', `There was an error loading message history. Error: ${err.message}`)
+		}		
 	})
 
 	socket.on('disconnect', () => {		
