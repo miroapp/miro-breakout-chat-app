@@ -17,6 +17,6 @@ export interface ChatSettings {
 }
 
 export interface ChatController {
-	sendMessage: (msg: string, name: string) => void
+	sendMessage: (msg: string) => void
 	getMessageHistory: ({roomId, oldestMessageTimestamp, limit}) => void
 }

@@ -9,11 +9,14 @@
     "nedb-promises": "^4.1.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.1.2",
-    "socket.io": "^1.7.3",
-    "uuid": "^8.3.1"
+    "socket.io": "^1.7.3"
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "./node_modules/.bin/nodemon index.js"
+    "dev": "./node_modules/.bin/nodemon index.js",
+    "test": "mocha -b **/*_test.js"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
   }
 }

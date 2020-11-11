@@ -1,7 +1,19 @@
 "use strict";
 
 class ChatMessage {
-    constructor(message, username, roomId) {
+    constructor({message, username, roomId}) {
+        if (!message) {
+            throw new Error("Message is required");
+        }
+
+        if (!username) {
+            throw new Error("Username is required");
+        }
+
+        if (!roomId) {
+            throw new Error("RoomId is required");
+        }
+
         this._message = message;
         // assumes names are unique per room
         this._username = username;
@@ -12,12 +24,20 @@ class ChatMessage {
         return this._message;
     }
 
-    get name() {
-        return this.name;
+    get username() {
+        return this._username;
     }
 
     get roomId() {
-        return this.roomId;
+        return this._roomId;
+    }
+
+    toDatabaseObject() {
+        return {
+            message: this.message,
+            username: this.username,
+            roomId: this.roomId
+        };
     }
 }
 

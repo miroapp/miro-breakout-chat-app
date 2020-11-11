@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
 
 	socket.on('chat message', async(msg, _name) => {
 		logger.log(`Got chat message by ${_name}`)
-		const message = new ChatMessage(msg, _name, roomId);
+		const message = new ChatMessage({message: msg, username: _name, roomId});
 		try {
 			await db.messages.save(message);
 			io.to(roomId).emit('chat message', msg, _name);
@@ -90,8 +90,7 @@ io.on('connection', (socket) => {
 		logger.log(`Getting message history for roomId ${roomId} and earliest timestamp ${oldestMessageTimestamp} and limit ${limit}.`)
 		try {
 			const results = await db.messages.listOlder(roomId, oldestMessageTimestamp, limit)
-			// check that this at least returns some empty array
-			io.to(roomId).emit('message history', results)
+			io.to(roomId).emit('message history', results || [])
 		}
 		catch (err) {
 			logger.error(err);
