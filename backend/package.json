@@ -14,6 +14,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "./node_modules/.bin/nodemon index.js",
+    "prettier": "prettier -w **/*.js",
     "test": "mocha -b **/*_test.js"
   },
   "devDependencies": {
