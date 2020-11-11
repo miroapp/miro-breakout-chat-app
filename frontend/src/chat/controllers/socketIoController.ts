@@ -14,8 +14,8 @@ const initChat = ({roomId, name, messageHandler, messageHistoryHandler}: ChatSet
 	socket.on('message history', messageHistoryHandler);
 
 	return {
-		sendMessage: (msg: string) => {
-			socket.emit('chat message', msg, name, () => {})
+		sendMessage: (msg: string, timestamp: number) => {
+			socket.emit('chat message', msg, name, timestamp, () => {})
 		},
 		getMessageHistory: ({roomId, oldestMessageTimestamp, limit}) => {
 			socket.emit('message history', {roomId, oldestMessageTimestamp, limit}, () => {})

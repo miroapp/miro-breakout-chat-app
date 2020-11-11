@@ -73,12 +73,12 @@ io.on('connection', (socket) => {
 		}
 	})
 
-	socket.on('chat message', async(msg, _name) => {
+	socket.on('chat message', async(msg, _name, timestamp) => {
 		logger.log(`Got chat message by ${_name}`)
-		const message = new ChatMessage({message: msg, username: _name, roomId});
 		try {
+			const message = new ChatMessage({message: msg, username: _name, roomId, timestamp});
 			await db.messages.save(message);
-			io.to(roomId).emit('chat message', msg, _name);
+			io.to(roomId).emit('chat message', msg, _name, timestamp);
 		}
 		catch (err) {
 			logger.error(err);

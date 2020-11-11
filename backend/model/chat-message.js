@@ -1,7 +1,7 @@
 "use strict";
 
 class ChatMessage {
-    constructor({message, username, roomId}) {
+    constructor({message, username, roomId, timestamp}) {
         if (!message) {
             throw new Error("Message is required");
         }
@@ -18,6 +18,7 @@ class ChatMessage {
         // assumes names are unique per room
         this._username = username;
         this._roomId = roomId;
+        this._timestamp = timestamp || Date.now();
     }
 
     get message() {
@@ -32,11 +33,16 @@ class ChatMessage {
         return this._roomId;
     }
 
+    get timestamp() {
+        return this._timestamp;
+    }
+
     toDatabaseObject() {
         return {
             message: this.message,
             username: this.username,
-            roomId: this.roomId
+            roomId: this.roomId,
+            timestamp: this.timestamp
         };
     }
 }

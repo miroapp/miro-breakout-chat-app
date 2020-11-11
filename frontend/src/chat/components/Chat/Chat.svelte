@@ -22,8 +22,8 @@
 	let chatController: ChatController = null
 
 	let messages: Array<MessageInterface> = []
-	const handleNewMessage: MessageHandler = (text, author) => {
-		messages = [...messages, {text, author, timestamp: new Date()}]
+	const handleNewMessage: MessageHandler = (text, author, timestamp) => {
+		messages = [...messages, {text, author, timestamp}]
 		messages = messages.sort((a,b) => (a.timestamp > b.timestamp) ? 1 : 
                 ((b.timestamp > a.timestamp) ? -1 : 0))
 	}
@@ -31,7 +31,7 @@
 	const handleMessageSend = () => {
 		if (!newMessageText) return
 
-		chatController.sendMessage(newMessageText)
+		chatController.sendMessage(newMessageText, Date.now())
 
 		newMessageText = ''
 
@@ -50,7 +50,11 @@
 			noOlderMessages = true;
 		}
 		else {
-			messages = [..._messages, ...messages]
+			messages = [..._messages.map((record: any) => {return {
+				author: record.username,
+				text: record.message,
+				timestamp: record.timestamp
+			}}), ...messages]
 		}
 	}
 

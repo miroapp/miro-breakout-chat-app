@@ -1,10 +1,10 @@
 export interface Message {
 	text: string
 	author: string
-	timestamp: Date
+	timestamp: number
 }
 
-export type MessageHandler = (msg: string, name: string) => void
+export type MessageHandler = (msg: string, name: string, timestamp: number) => void
 export type MessageHistoryHandler = (messages: []) => void
 
 export type EmitHandler = (error: any, response: any) => void
@@ -17,6 +17,6 @@ export interface ChatSettings {
 }
 
 export interface ChatController {
-	sendMessage: (msg: string) => void
+	sendMessage: (msg: string, timestamp: number) => void
 	getMessageHistory: ({roomId, oldestMessageTimestamp, limit}) => void
 }

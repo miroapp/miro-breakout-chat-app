@@ -6,7 +6,7 @@
 <div class="message__container">
 	<div class="message__header">
 		<strong>{decodeURIComponent(message.author)}</strong>
-		<span>{message.timestamp.toLocaleTimeString().slice(0, 5)}</span>
+		<span>{new Date(message.timestamp).toLocaleTimeString().slice(0, 5)}</span>
 	</div>
 	<div class="message__body">
 		<p class="message__text">{message.text}</p>

@@ -9,7 +9,7 @@ class Database {
     constructor() {
         if (!this._messages) {
             logger.log(`Creating new message datastore at ${PATH_MESSAGE_STORAGE}`)
-            this._messages = new MessageStore(Datastore.create({ filename: PATH_MESSAGE_STORAGE, autoload: true }));
+            this._messages = new MessageStore(Datastore.create({ filename: PATH_MESSAGE_STORAGE, autoload: true, timestampData: true}));
         }
     }
 
